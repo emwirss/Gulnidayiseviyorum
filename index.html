@@ -2,437 +2,209 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emir & Gülnida ✨ Sonsuz Aşk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Emir & Gülnida ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --pembe: #FFB6C1;
-            --koyu-pembe: #FF1493;
-            --beyaz: #FFFFFF;
+        :root { --pembe: #FFB6C1; --koyu-pembe: #FF1493; --beyaz: #FFFFFF; }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background: #1a000d; 
+            font-family: 'Poppins', sans-serif; 
         }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #4b0026 0%, #1a000d 100%);
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Giriş Katmanı */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #4b0026, #000);
+            z-index: 2000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: 1s ease;
         }
 
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
+        #entry-btn {
+            padding: 15px 35px; border: 2px solid var(--pembe); border-radius: 50px;
+            color: white; font-family: 'Dancing Script', cursive; font-size: 1.5rem;
+            cursor: pointer; background: rgba(255, 20, 147, 0.2);
+            box-shadow: 0 0 25px var(--koyu-pembe); animation: pulse 2s infinite;
         }
 
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--koyu-pembe); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px var(--koyu-pembe); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--koyu-pembe); }
+        }
+
+        canvas { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+
+        /* Ana Kart Tasarımı */
         .glass-card {
-            position: relative;
-            z-index: 10;
-            padding: 40px 30px;
-            background: rgba(255, 182, 193, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 40px;
-            box-shadow: 0 0 50px rgba(255, 20, 147, 0.3);
-            text-align: center;
-            width: 85%;
-            max-width: 380px;
+            position: relative; z-index: 10; padding: 30px 20px;
+            background: rgba(255, 182, 193, 0.1); backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2); text-align: center;
+            width: 90%; max-width: 350px; opacity: 0; transform: scale(0.8);
+            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .names {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.3rem;
-            margin-bottom: 20px;
-            color: var(--beyaz);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            text-shadow: 0 0 15px var(--koyu-pink), 0 0 5px var(--beyaz);
+        .show-card { opacity: 1 !important; transform: scale(1) !important; }
+
+        .names { 
+            font-family: 'Dancing Script', cursive; font-size: 2.2rem; 
+            color: white; margin-bottom: 25px; 
+            text-shadow: 0 0 15px var(--koyu-pembe);
         }
 
-        .main-heart {
-            color: var(--beyaz);
-            font-size: 1.5rem;
-            animation: beat 1.4s infinite ease-in-out;
+        .timer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        
+        .box { 
+            background: rgba(255, 255, 255, 0.1); padding: 12px 5px; 
+            border-radius: 15px; border-bottom: 3px solid var(--pembe); 
         }
 
-        @keyframes beat {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.3); opacity: 1; }
+        .num { display: block; font-size: 1.4rem; font-weight: 600; color: white; }
+        .lab { font-size: 0.55rem; color: var(--pembe); text-transform: uppercase; font-weight: 600; }
+
+        /* Müzik Butonu */
+        .music-control {
+            position: fixed; bottom: 25px; right: 25px; z-index: 100;
+            width: 50px; height: 50px; background: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 15px var(--pembe); cursor: pointer; font-size: 1.2rem;
         }
 
-        .timer {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        .click-heart { 
+            position: absolute; pointer-events: none; z-index: 1500; 
+            animation: fly 1.2s ease-out forwards; font-size: 1.5rem;
         }
 
-        .box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 5px;
-            border-radius: 20px;
-            border-bottom: 2px solid var(--pembe);
+        @keyframes fly { 
+            0% { transform: scale(0.5) translate(0,0); opacity: 1; } 
+            100% { transform: scale(2) translate(0, -100px) rotate(20deg); opacity: 0; } 
         }
 
-        .num {
-            display: block;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--beyaz);
-            text-shadow: 0 0 10px var(--pembe);
-        }
-
-        .lab {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            color: var(--pembe);
-            letter-spacing: 1px;
-        }
-
-        .music-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 55px;
-            height: 55px;
-            background: var(--beyaz);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 0 20px var(--pembe);
-        }
-
-        .click-heart {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1000;
-            animation: fly 1.3s ease-out forwards;
-        }
-
-        @keyframes fly {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(2.5) translateY(-120px) rotate(20deg); opacity: 0; }
+        .container {
+            width: 100%; height: 100%; display: flex; 
+            justify-content: center; align-items: center;
         }
     </style>
 </head>
 <body onclick="createHeart(event)">
 
-    <canvas id="canvas"></canvas>
-
-    <div class="glass-card">
-        <div class="names">
-            Emir <span class="main-heart">❤</span> Gülnida
-        </div>
-
-        <div class="timer">
-            <div class="box"><span id="d" class="num">0</span><span class="lab">Gün</span></div>
-            <div class="box"><span id="h" class="num">0</span><span class="lab">Saat</span></div>
-            <div class="box"><span id="m" class="num">0</span><span class="lab">Dk</span></div>
-            <div class="box"><span id="s" class="num">0</span><span class="lab">Sn</span></div>
-        </div>
-
-        <p style="color: var(--beyaz); margin-top: 30px; letter-spacing: 6px; font-size: 0.75rem; opacity: 0.8;">
-            İYİ Kİ VARSIN
-        </p>
+    <div id="overlay">
+        <button id="entry-btn">Bizim İçin Tıkla ❤️</button>
     </div>
 
-    <div class="music-btn" id="mBtn">🎵</div>
-    
-    <audio id="bgM" loop>
-        <source src="askimiz.mp3" type="audio/mpeg">
-    </audio>
+    <canvas id="canvas"></canvas>
+
+    <div class="container">
+        <div class="glass-card" id="mainCard">
+            <div class="names">Emir & Gülnida</div>
+            <div class="timer">
+                <div class="box"><span id="d" class="num">0</span><span class="lab">Gün</span></div>
+                <div class="box"><span id="h" class="num">0</span><span class="lab">Saat</span></div>
+                <div class="box"><span id="m" class="num">0</span><span class="lab">Dk</span></div>
+                <div class="box"><span id="s" class="num">0</span><span class="lab">Sn</span></div>
+            </div>
+            <p style="color: white; margin-top: 25px; letter-spacing: 4px; font-size: 0.7rem; opacity: 0.8; font-weight: 600;">İYİ Kİ VARSIN</p>
+        </div>
+    </div>
+
+    <div class="music-control" id="musicBtn" style="display: none;">🎵</div>
+    <audio id="bgM" loop src="askimiz.mp3"></audio>
 
     <script>
-        // Arka plan efektleri
+        const audio = document.getElementById('bgM');
+        const overlay = document.getElementById('overlay');
+        const card = document.getElementById('mainCard');
+        const musicBtn = document.getElementById('musicBtn');
+
+        // Giriş Mekanizması
+        document.getElementById('entry-btn').addEventListener('click', function() {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                card.classList.add('show-card');
+                musicBtn.style.display = 'flex';
+                
+                // Müzik Başlatma (Yumuşak geçişli)
+                audio.volume = 0;
+                audio.play();
+                let v = 0;
+                let fade = setInterval(() => {
+                    if (v < 0.8) { v += 0.05; audio.volume = v; }
+                    else { clearInterval(fade); }
+                }, 150);
+            }, 800);
+        });
+
+        // Sayaç (18 Şubat 2026'ya göre ayarlı kanka)
+        const start = new Date('2026-02-18T00:00:00');
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - start;
+            
+            document.getElementById('d').innerText = Math.floor(diff / 86400000);
+            document.getElementById('h').innerText = Math.floor((diff / 3600000) % 24);
+            document.getElementById('m').innerText = Math.floor((diff / 60000) % 60);
+            document.getElementById('s').innerText = Math.floor((diff / 1000) % 60);
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Müzik Buton Kontrolü
+        musicBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (audio.paused) { audio.play(); musicBtn.innerHTML = '🎶'; }
+            else { audio.pause(); musicBtn.innerHTML = '🎵'; }
+        };
+
+        // Arka Plan Kalp Animasyonu
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let hearts = [];
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.onresize = resize; resize();
-        class HeartParticle {
-            constructor() { this.reset(); }
-            reset() {
+
+        class Heart {
+            constructor() { this.init(); }
+            init() {
                 this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
+                this.y = canvas.height + 20;
                 this.size = Math.random() * 10 + 5;
-                this.speedX = Math.random() * 0.6 - 0.3;
-                this.speedY = Math.random() * 0.6 - 0.3;
-                this.opacity = Math.random() * 0.6 + 0.2;
-                this.color = Math.random() > 0.5 ? '#FFFFFF' : '#FFB6C1';
-            }
-            update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-            }
-            draw() { ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color; ctx.font = `${this.size}px Arial`; ctx.fillText('❤', this.x, this.y); }
-        }
-        for (let i = 0; i < 45; i++) hearts.push(new HeartParticle());
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            hearts.forEach(h => { h.update(); h.draw(); });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // --- SAYAÇ AYARI (Dün: 18 Şubat 2026) ---
-        const start = new Date('2026-02-18T00:00:00'); 
-
-        function tick() {
-            const diff = new Date() - start;
-            document.getElementById('d').innerText = Math.floor(diff / 86400000);
-            document.getElementById('h').innerText = Math.floor((diff / 3600000) % 24);
-            document.getElementById('m').innerText = Math.floor((diff / 60000) % 60);
-            document.getElementById('s').innerText = Math.floor((diff / 1000) % 60);
-        }
-        setInterval(tick, 1000); tick();
-
-        // Müzik kontrolü (Tarayıcı engeline karşı en sağlam yöntem)
-        const btn = document.getElementById('mBtn');
-        const audio = document.getElementById('bgM');
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            if (audio.paused) { 
-                audio.play(); 
-                btn.innerHTML = '🎶'; 
-            } else { 
-                audio.pause(); 
-                btn.innerHTML = '🎵'; 
-            }
-        };
-
-        function createHeart(e) {
-            const h = document.createElement('div');
-            h.className = 'click-heart';
-            h.innerHTML = '❤';
-            h.style.left = e.clientX + 'px';
-            h.style.top = e.clientY + 'px';
-            h.style.color = '#FFB6C1';
-            document.body.appendChild(h);
-            setTimeout(() => h.remove(), 1300);
-        }
-    </script>
-</body>
-</html>            z-index: 10;
-            padding: 40px 30px;
-            background: rgba(255, 182, 193, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 40px;
-            box-shadow: 0 0 50px rgba(255, 20, 147, 0.3);
-            text-align: center;
-            width: 85%;
-            max-width: 380px;
-        }
-
-        .names {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.3rem;
-            margin-bottom: 20px;
-            color: var(--beyaz);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            text-shadow: 0 0 15px var(--koyu-pembe), 0 0 5px var(--beyaz);
-        }
-
-        .main-heart {
-            color: var(--beyaz);
-            font-size: 1.5rem;
-            animation: beat 1.4s infinite ease-in-out;
-        }
-
-        @keyframes beat {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.3); opacity: 1; }
-        }
-
-        .timer {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 5px;
-            border-radius: 20px;
-            border-bottom: 2px solid var(--pembe);
-        }
-
-        .num {
-            display: block;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--beyaz);
-            text-shadow: 0 0 10px var(--pembe);
-        }
-
-        .lab {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            color: var(--pembe);
-            letter-spacing: 1px;
-        }
-
-        .music-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 55px;
-            height: 55px;
-            background: var(--beyaz);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 0 20px var(--pembe);
-            transition: 0.3s;
-        }
-
-        .click-heart {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1000;
-            animation: fly 1.3s ease-out forwards;
-        }
-
-        @keyframes fly {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(2.5) translateY(-120px) rotate(20deg); opacity: 0; }
-        }
-    </style>
-</head>
-<body onclick="createHeart(event)">
-
-    <canvas id="canvas"></canvas>
-
-    <div class="glass-card">
-        <div class="names">
-            Emir <span class="main-heart">❤</span> Gülnida
-        </div>
-
-        <div class="timer">
-            <div class="box"><span id="d" class="num">0</span><span class="lab">Gün</span></div>
-            <div class="box"><span id="h" class="num">0</span><span class="lab">Saat</span></div>
-            <div class="box"><span id="m" class="num">0</span><span class="lab">Dk</span></div>
-            <div class="box"><span id="s" class="num">0</span><span class="lab">Sn</span></div>
-        </div>
-
-        <p style="color: var(--beyaz); margin-top: 30px; letter-spacing: 6px; font-size: 0.75rem; opacity: 0.8;">
-            İYİ Kİ VARSIN
-        </p>
-    </div>
-
-    <div class="music-btn" id="mBtn">🎵</div>
-    
-    <audio id="bgM" loop src="askimiz.mp3"></audio>
-
-    <script>
-        // Arka plan animasyonu (Canvas)
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let hearts = [];
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.onresize = resize;
-        resize();
-
-        class HeartParticle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 10 + 5;
-                this.speedX = Math.random() * 0.6 - 0.3;
-                this.speedY = Math.random() * 0.6 - 0.3;
-                this.opacity = Math.random() * 0.6 + 0.2;
-                this.color = Math.random() > 0.5 ? '#FFFFFF' : '#FFB6C1';
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.3;
             }
             draw() {
                 ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
+                ctx.fillStyle = '#FFB6C1';
                 ctx.font = `${this.size}px Arial`;
                 ctx.fillText('❤', this.x, this.y);
+                this.y -= this.speed;
+                if (this.y < -20) this.init();
             }
         }
 
-        for (let i = 0; i < 45; i++) hearts.push(new HeartParticle());
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            hearts.forEach(h => { h.update(); h.draw(); });
-            requestAnimationFrame(animate);
+        for(let i=0; i<30; i++) hearts.push(new Heart());
+        function anim() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            hearts.forEach(h => h.draw());
+            requestAnimationFrame(anim);
         }
-        animate();
+        anim();
 
-        // SAYAÇ AYARI: Buraya başlangıç tarihinizi YYYY-MM-DD formatında yaz kanka
-        const start = new Date('2026-02-18T00:00:00'); 
-
-        function tick() {
-            const now = new Date();
-            const diff = now - start;
-            document.getElementById('d').innerText = Math.floor(diff / 86400000);
-            document.getElementById('h').innerText = Math.floor((diff / 3600000) % 24);
-            document.getElementById('m').innerText = Math.floor((diff / 60000) % 60);
-            document.getElementById('s').innerText = Math.floor((diff / 1000) % 60);
-        }
-        setInterval(tick, 1000);
-        tick();
-
-        // Tıklayınca kalp fırlatma
-        const colors = ['#FFFFFF', '#FFB6C1', '#FF69B4'];
+        // Tıklama Efekti
         function createHeart(e) {
             const h = document.createElement('div');
             h.className = 'click-heart';
-            h.innerHTML = '❤';
+            h.innerHTML = '❤️';
             h.style.left = e.clientX + 'px';
             h.style.top = e.clientY + 'px';
-            h.style.color = colors[Math.floor(Math.random() * colors.length)];
             document.body.appendChild(h);
-            setTimeout(() => h.remove(), 1300);
+            setTimeout(() => h.remove(), 1200);
         }
-
-        // Müzik kontrolü
-        const btn = document.getElementById('mBtn');
-        const audio = document.getElementById('bgM');
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            if (audio.paused) { 
-                audio.play(); 
-                btn.innerHTML = '🎶'; 
-                btn.style.boxShadow = '0 0 30px #FF1493';
-            } else { 
-                audio.pause(); 
-                btn.innerHTML = '🎵'; 
-                btn.style.boxShadow = '0 0 20px #FFB6C1';
-            }
-        };
     </script>
 </body>
 </html>
